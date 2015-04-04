@@ -1,4 +1,5 @@
 import pebbleflipapi
+# pebbleflipapi obviously has to be in the same directory as this file
 
 def application(environ, start_response):
 
