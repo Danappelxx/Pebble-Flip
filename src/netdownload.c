@@ -2,19 +2,12 @@
 
 static TextLayer *text_layer;
 	
-char *images[20]; /*= {
-  //"https://www.dvappel.me/flip/media?media_id=954006307469480285_1374598283&token=611228313.b7f2f87.c963add7547b466ea1642a9c0f188dc3"
-};
-*/
-
-// char **temp_images;
-
+char *images[20];
 char *base_url = "https://www.dvappel.me/flip/media?";
-char access_token[51];// = "&token=611228313.b7f2f87.c963add7547b466ea1642a9c0f188dc3";
+char access_token[51];
 
 int curr_image = 0;
 
-// size_t images_length = sizeof(images);
 size_t images_length;
 bool got_all_images = false;
 
@@ -27,19 +20,6 @@ char* concat(char *s1, char *s2)
     return result;
 }
 
-/*
-void append_url_to_images_list(char *url) {
-	APP_LOG(APP_LOG_LEVEL_INFO, "final url (cut-off): %s", url);
-
-	images = temp_images;
-}
-*/
-
-/*
-void finalize_images_urls() {
-	
-}
-*/	
 void process_image_data(char *image_data){
 	
 	APP_LOG(APP_LOG_LEVEL_INFO, "image 123: %s", image_data);
@@ -55,11 +35,8 @@ void process_image_data(char *image_data){
 void send_app_message_received() {
 	DictionaryIterator *outbox;
 	app_message_outbox_begin(&outbox);
-	// Tell the javascript how big we want each chunk of data: max possible size - dictionary overhead with one Tuple in it.
-	//uint32_t chunk_size = app_message_inbox_size_maximum() - dict_calc_buffer_size(1);
-	//dict_write_int(outbox, NETDL_CHUNK_SIZE, &chunk_size, sizeof(uint32_t), false);
-	// Send the URL
-	dict_write_cstring(outbox, IMAGE_DATA_RECEIVED, "IMAGE_DATA_RECEIVED123");
+
+	dict_write_cstring(outbox, IMAGE_DATA_RECEIVED, "IMAGE_DATA_RECEIVED");
 
 	app_message_outbox_send();
 }
@@ -159,7 +136,7 @@ void netdownload_receive(DictionaryIterator *iter, void *context) {
 	case IMAGE_DATA_DL_LENGTH:
 	  	APP_LOG(APP_LOG_LEVEL_DEBUG, "Image data length: %d", (int)tuple->value);
 		images_length = (int)tuple->value;
-		//text_layer_set_text(text_layer, "Initializing... (Don't press anything)");
+		//text_layer_set_text(text_layer, "Initializing... (Don't press anything!)");
 	  	send_app_message_received();
 		break;
 	  

@@ -13,7 +13,7 @@
 #define NETDL_URL NETDL_DATA + 4
 	
 	
-// My stuff
+// Keys
 #define IMAGE_DATA 1
 		
 #define IMAGE_DATA_RECEIVED 5

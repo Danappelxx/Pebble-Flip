@@ -9,10 +9,6 @@ static TextLayer *text_layer;
 static BitmapLayer *bitmap_layer;
 static GBitmap *current_bmp;
 
-//char *images[] = {
-//  "https://www.dvappel.me/flip/media?media_id=954006307469480285_1374598283&token=611228313.b7f2f87.c963add7547b466ea1642a9c0f188dc3"
-//};
-
 
 static unsigned long image = 0;
 
@@ -136,51 +132,6 @@ void send_message_access_token_received(){
 }
 
 
-
-
-
-//static void inbox_received_callback(DictionaryIterator *iterator, void *context) {
-  // Get the first pair
-	/*
-  Tuple *t = dict_read_first(iterator);
-
-  APP_LOG(APP_LOG_LEVEL_INFO, "inbox received callback started12321");
-  // Process all pairs present
-  if(t != NULL){
-	  APP_LOG(APP_LOG_LEVEL_INFO, "tuple is not null");
-  } else {
-	  APP_LOG(APP_LOG_LEVEL_INFO, "tuple IS null");
-  }
-  while(t != NULL) {
-    // Process this pair's key
-    switch (t->key) {
-      case URL_LIST:
-        APP_LOG(APP_LOG_LEVEL_INFO, "KEY_DATA received with value %s", t->value->cstring);
-        break;
-    }
-
-    // Get next pair, if any
-    t = dict_read_next(iterator);
-  }*/
-//}
-
-/*
-static void inbox_dropped_callback(AppMessageResult reason, void *context) {
-  APP_LOG(APP_LOG_LEVEL_ERROR, "Message 1 dropped!");
-}
-
-static void outbox_failed_callback(DictionaryIterator *iterator, AppMessageResult reason, void *context) {
-  APP_LOG(APP_LOG_LEVEL_ERROR, "Outbox 2 send failed!");
-}
-
-static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
-  APP_LOG(APP_LOG_LEVEL_INFO, "Outbox 2 send success!");
-}
-
-*/
-
-
-
 static void deinit(void) {
   netdownload_deinitialize(); // call this to avoid 20B memory leak
   window_destroy(window);
@@ -208,18 +159,7 @@ static void init(void) {
 	
   accel_tap_service_subscribe(tap_handler);
 	
-	
-	//images = malloc(15 * sizeof(char *));
-	//app_message_register_inbox_received(inbox_received_callback);
-	//app_message_register_inbox_dropped(inbox_dropped_callback);
-	//app_message_register_outbox_failed(outbox_failed_callback);
-	//app_message_register_outbox_sent(outbox_sent_callback);
-
-	//app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
-  
 }
-
-
 
 int main(void) {
   init();
