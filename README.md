@@ -9,7 +9,7 @@ If you did everything correctly, wait several seconds (5 should be enough) after
 # Notes
 As of now, the known bugs are:
 * The app crashes occasionally due to memory errors (unfortunately, seems to be out of my control).
-* Attempting to go to the previous image on your feed while on the first image of your feed will freeze the application
+* Attempting to go to the previous image on your feed while on the first image of your feed will freeze the application.
 * There is no indication of when the image urls are finished loading. This generally takes under 5 seconds, but you can't be certain unless you look at the app logs.
 
 # Composition
