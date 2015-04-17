@@ -1,49 +1,7 @@
 #include "netdownload.h"
-
+	
 static TextLayer *text_layer;
 	
-char *images[20];
-char *base_url = "https://www.dvappel.me/flip/media?";
-char access_token[51];
-
-int curr_image = 0;
-
-size_t images_length;
-bool got_all_images = false;
-
-char* concat(char *s1, char *s2)
-{
-    char *result = malloc(strlen(s1)+strlen(s2)+1);
-	
-    strcpy(result, s1);
-    strcat(result, s2);
-    return result;
-}
-
-void process_image_data(char *image_data){
-	
-	APP_LOG(APP_LOG_LEVEL_INFO, "image 123: %s", image_data);
-	
-	char *full_url = concat(base_url, image_data);
-	full_url = concat(full_url, access_token);
-	
-	images[curr_image] = full_url;
-	APP_LOG(APP_LOG_LEVEL_INFO, "images: %s", images[curr_image]);
-	
-}
-
-void send_app_message_received() {
-	DictionaryIterator *outbox;
-	app_message_outbox_begin(&outbox);
-
-	dict_write_cstring(outbox, IMAGE_DATA_RECEIVED, "IMAGE_DATA_RECEIVED");
-
-	app_message_outbox_send();
-}
-
-void save_access_token(char *access_token) {
-	persist_write_string(ACCESS_TOKEN_SAVE, access_token);
-}
 
 
 
@@ -121,33 +79,6 @@ void netdownload_receive(DictionaryIterator *iter, void *context) {
     return;
   }
   switch (tuple->key) {
-	  
-	case ACCESS_TOKEN:
-		APP_LOG(APP_LOG_LEVEL_INFO, "Received access token as : %s", (char *)tuple->value);
-		save_access_token((char *)tuple->value);
-		break;
-	  
-	case IMAGE_DATA_DL_STOP:
-		APP_LOG(APP_LOG_LEVEL_INFO, "Got all images");
-		//text_layer_set_text(text_layer, "Done! Press the down button to load the first image in your feed.");
-		
-		break;
-	  
-	case IMAGE_DATA_DL_LENGTH:
-	  	APP_LOG(APP_LOG_LEVEL_DEBUG, "Image data length: %d", (int)tuple->value);
-		images_length = (int)tuple->value;
-		//text_layer_set_text(text_layer, "Initializing... (Don't press anything!)");
-	  	send_app_message_received();
-		break;
-	  
-	case IMAGE_DATA:
-		APP_LOG(APP_LOG_LEVEL_DEBUG, "Got IMAGE_DATA %s", (char *)tuple->value);
-	  	process_image_data((char *)tuple->value);
-	  	curr_image++;
-		send_app_message_received();
-		break;
-	  
-	  
 	  
     case NETDL_DATA:
       if (ctx->index + tuple->length <= ctx->length) {
@@ -229,4 +160,5 @@ void netdownload_out_success(DictionaryIterator *iter, void *context) {
 
 void netdownload_out_failed(DictionaryIterator *iter, AppMessageResult reason, void *context) {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Failed to send message. Reason = %s", translate_error(reason));
+	window_stack_pop_all(true);
 }

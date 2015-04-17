@@ -8,7 +8,7 @@ Pebble.addEventListener('showConfiguration', function (e){
 });
 
 Pebble.addEventListener('webviewclosed', function (e) {
-	var access_token = e.response;
+	var access_token = 'e.response';
 	
 	Pebble.sendAppMessage(
 		{
@@ -25,7 +25,37 @@ Pebble.addEventListener('webviewclosed', function (e) {
 
 Pebble.addEventListener("ready", function(e) {
 	console.log("NetDownload JS Ready");
+	send_ready_message();
+	//temp_access_token();
 });
+
+function send_ready_message() {
+	Pebble.sendAppMessage(
+	{
+		PEBBLE_JS_READY: 1
+	},
+	function(e) {
+		console.log('Pebblejs ready message succeeded.');
+	},
+	function (e) {
+		console.log('Pebblejs ready message failed.');
+	});
+}
+
+/*
+function temp_access_token() {
+	Pebble.sendAppMessage(
+	{
+		ACCESS_TOKEN: '611228313.b7f2f87.c963add7547b466ea1642a9c0f188dc3'
+	},
+	function(e) {
+		console.log('Sent access token: ' + access_token);
+	},
+	function(e) {
+		console.log('Failed sending access_token: ' + access_token);
+	});
+}
+*/
 
 function send_media_id_list_length(){
 	var media_id_list_length = media_id_list.length;
@@ -45,7 +75,7 @@ function send_media_id_list_length(){
 
 function send_next_message(){
 	
-	if( media_id_list[curr_message] != undefined) {
+	if( media_id_list[curr_message] !== undefined) {
 		console.log('sending next message: ' + media_id_list[curr_message]);
 	
 		var media_id = media_id_list[curr_message];
@@ -83,7 +113,7 @@ function send_next_message(){
 function send_media_feed_id_list(){
 	
 	var request = new XMLHttpRequest();
-	var url = construct_request_url();
+	var url = construct_request_url('media_feed');
 	
 	request.onreadystatechange = function (){
 		if(request.readyState == 4 && request.status == 200) {
@@ -98,16 +128,63 @@ function send_media_feed_id_list(){
 }
 
 function construct_request_url(){
-
 	var base_url = 'https://www.dvappel.me/flip/media_feed_id_list_with_prefix_and_postfix?token=';
-
 	var url = base_url + access_token;
 	console.log('request url: ' + url);
 	return url;
 }
 
+function construct_username_request_url(media_id, token){
+	var url = 'https://api.instagram.com/v1/media/' + media_id + '?access_token=' + token;
+	// 'https://api.instagram.com/v1/media/964075185940801590_307029425?access_token=611228313.b7f2f87.c963add7547b466ea1642a9c0f188dc3'
+	
+	console.log('username request url: ' + url);
+	return url;
+}
 
+function get_username_from_url(base_url) {
+	var query_string = base_url.split('?')[1].split('&');
+	var media_id = query_string[0].split('=')[1];
+	var token = query_string[1].split('=')[1];
+	//media_id=964556497328546050_600566031&token=611228313.b7f2f87.c963add7547b466ea1642a9c0f188dc3
+	console.log('Got media id: ' + media_id);
+	console.log('Got access token: ' + token);
+	
+	
+	send_username_request(media_id, token);
+}
 
+function send_username_request(media_id, token) {
+	var request = new XMLHttpRequest();
+	var url = construct_username_request_url(media_id, token);
+	
+	request.onreadystatechange = function (){
+		if(request.readyState == 4 && request.status == 200) {
+			var response = JSON.parse(request.responseText);
+			var user = response.data.user;
+			var username = user.username;
+			send_username(username);
+		}
+	};
+	
+	request.open("GET", url, true);
+	request.send();
+
+}
+
+function send_username(username) {
+	Pebble.sendAppMessage(
+		{
+			SENT_USERNAME: username
+		},
+		function(e) {
+			console.log('Successfully delivered username: ' + username);
+		},
+		function(e) {
+			console.log('Unable to deliver username: ' + username + '. Error: ' + e);
+		}
+	);
+}
 
 
 
@@ -116,6 +193,11 @@ function construct_request_url(){
 Pebble.addEventListener("appmessage", function(e) {
   console.log("Got message: " + JSON.stringify(e));
 	
+	if('GET_USERNAME' in e.payload) {
+		var url = e.payload['GET_USERNAME'];
+		console.log('got username request with url: ' + url);
+		get_username_from_url(url);
+	}
 	
 	
 	if('IMAGE_DATA_RECEIVED' in e.payload) {
@@ -124,6 +206,7 @@ Pebble.addEventListener("appmessage", function(e) {
 	
 	if('ACCESS_TOKEN_RECEIVED' in e.payload) {
 		access_token = e.payload['ACCESS_TOKEN_RECEIVED'];
+		console.log('got access token!' + access_token);
 		send_media_feed_id_list();
 	}
 

@@ -13,26 +13,12 @@
 #define NETDL_URL NETDL_DATA + 4
 	
 	
-// Keys
-#define IMAGE_DATA 1
-		
-#define IMAGE_DATA_RECEIVED 5
-	
-#define IMAGE_DATA_DL_LENGTH 6
-
-#define IMAGE_DATA_DL_STOP 7
-	
-#define ACCESS_TOKEN 2
-	
-#define ACCESS_TOKEN_SAVE 10
-	
-#define ACCESS_TOKEN_RECEIVED 9
 
 	
-extern char *images[];
-extern size_t images_length;
-extern bool got_all_images;
-extern char access_token[51];
+//extern char *images[];
+//extern size_t images_length;
+//extern bool got_all_images;
+//extern char access_token[51];
 
 typedef struct {
   /* We keep a pointer to the data so we can free it later. */
